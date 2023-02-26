@@ -248,3 +248,29 @@ class Delay {
  */
 
 ```
+
+# MenuBar App
+
+### Populate Menu
+
+```swift
+
+class AppDelegate: NSObject, NSApplicationDelegate {
+
+    private var statusItem: NSStatusItem!
+    
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        
+        self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        // statusButton => Menubar Item
+        if let statusButton = statusItem.button {
+            statusButton.image = NSImage(systemSymbolName: "pawprint.circle", accessibilityDescription: "Paw")
+        }
+        
+    }
+...
+```
+
+### If you want to create `Menu Bar` Only App Add this property to info.plist
+
+![create menu bar only app](./img1.png)
