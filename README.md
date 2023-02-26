@@ -249,7 +249,7 @@ class Delay {
 
 ```
 
-# MenuBar App
+# MenuBar App - UIKit
 
 ### Populate Menu
 
@@ -274,3 +274,127 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 ### If you want to create `Menu Bar` Only App Add this property to info.plist
 
 ![create menu bar only app](./img1.png)
+
+### Add PopOver 
+
+- You must assign ViewController  
+
+```swift
+class AppDelegate: NSObject, NSApplicationDelegate {
+
+    private var statusItem: NSStatusItem!
+    private var popover: NSPopover!
+    
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        
+        self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        // statusButton => Menubar Item
+        if let statusButton = statusItem.button {
+            statusButton.image = NSImage(systemSymbolName: "pawprint.circle", accessibilityDescription: "Paw")
+            statusButton.action = #selector(togglePopover)
+        }
+        
+        self.popover = NSPopover()
+        self.popover.contentSize = NSSize(width: 400, height: 200)
+        self.popover.behavior = .transient
+        self.popover.contentViewController = ViewController()
+        
+    }
+    
+    @objc func togglePopover() {
+        if let button = statusItem.button {
+            if popover.isShown {
+                self.popover.performClose(nil)
+            } else {
+                self.popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
+            }
+        }
+    }
+```
+
+### If you don't use storyboard, then you have to define `override func loadView()`
+
+- Just build an app like an usual UIKit App on ViewController
+
+```swift
+import Cocoa
+
+class ViewController: NSViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Do any additional setup after loading the view.
+    }
+
+    override func loadView() {
+        self.view = NSView(frame: NSRect(x: 0, y: 0, width: 400, height: 200))
+    }
+    
+    override var representedObject: Any? {
+        didSet {
+        // Update the view, if already loaded.
+        }
+    }
+
+
+}
+
+
+```
+
+# MenuBar App - SwiftUI
+
+```swift
+import SwiftUI
+
+@main
+struct MenuBarApp_SwiftUIApp: App {
+    
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
+
+class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
+    
+    private var statusItem: NSStatusItem!
+    private var popover: NSPopover!
+    
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        
+        self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        
+        if let statusButton = self.statusItem.button {
+            statusButton.image = NSImage(systemSymbolName: "chart.line.uptrend.xyaxis.circle", accessibilityDescription: "Chart Line")
+            statusButton.action = #selector(togglePopover)
+        }
+        
+        self.popover = NSPopover()
+        self.popover.contentSize = NSSize(width: 300, height: 300)
+        self.popover.behavior = .transient
+        // SWIFTUI
+        self.popover.contentViewController = NSHostingController(rootView: ContentView())
+        
+    }
+    
+    @objc
+    func togglePopover() {
+        
+        if let button = self.statusItem.button {
+            if self.popover.isShown {
+                self.popover.performClose(nil)
+            } else {
+                self.popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
+            }
+        }
+        
+    }
+    
+}
+
+```
