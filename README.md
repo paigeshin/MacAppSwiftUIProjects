@@ -58,7 +58,7 @@ struct DueDateSelectionView: View {
 
 ### Composing SideBarView
 
-```swifit
+```swift
 
 NavigationView {
     SideBarView()
